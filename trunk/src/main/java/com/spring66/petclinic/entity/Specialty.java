@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * @author TwinP
  */
 @Entity
-@Table(name="Specialties")
+@Table(name="SPECIALTIES")
 public class Specialty extends NamedEntity {
     /*private String name;
 

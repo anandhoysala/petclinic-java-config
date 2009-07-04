@@ -16,7 +16,7 @@ import javax.persistence.Temporal;
  * @author Emmanuel Bernard
  */
 @Entity
-@Table(name = "visits")
+@Table(name = "VISITS")
 public class Visit extends BaseEntity {
     //private Integer id;
 

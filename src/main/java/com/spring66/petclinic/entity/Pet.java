@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.OrderBy;
@@ -58,11 +59,9 @@ public class Pet {
     }
 
     public void addVisit(Visit v) {
-        if (getVisits() == null) {
-            setVisits(new HashSet<Visit>());
-        }
         v.setPet(this);
         getVisits().add(v);
+
     }
 
     /**
@@ -73,6 +72,9 @@ public class Pet {
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public Set<Visit> getVisits() {
+        if (this.visits == null) {
+            this.visits = new HashSet<Visit>();
+        }
         return visits;
     }
 
@@ -125,7 +127,7 @@ public class Pet {
 
         final Pet pet = (Pet) o;
 
-        if (!name.equals(pet.name)) {
+        if (!id.equals(pet.id)) {
             return false;
         }
 
@@ -133,10 +135,10 @@ public class Pet {
     }
 
     public int hashCode() {
-        if (name == null) {
-            return 1;
+        if (id == null) {
+            return 0;
         } else {
-            return name.hashCode();
+            return id.hashCode();
         }
     }
 
@@ -153,6 +155,11 @@ public class Pet {
      */
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+    
+    @Transient
+    public boolean isNew() {
+        return (this.id == null);
     }
 }
 

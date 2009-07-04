@@ -72,28 +72,28 @@ public class Visit extends BaseEntity {
         this.visitDate = visitDate;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Visit)) {
-            return false;
-        }
+    /*public boolean equals(Object o) {
+    if (this == o) {
+    return true;
+    }
+    if (!(o instanceof Visit)) {
+    return false;
+    }
 
-        final Visit visit = (Visit) o;
+    final Visit visit = (Visit) o;
 
-        if (!name.equals(visit.name)) {
-            return false;
-        }
+    if (!id.equals(visit.id)) {
+    return false;
+    }
 
-        return true;
+    return true;
     }
 
     public int hashCode() {
-        if (name == null) {
-            return 1;
-        } else {
-            return name.hashCode();
-        }
+    if (id == null) {
+    return 0;
+    } else {
+    return id.hashCode();
     }
+    }*/
 }

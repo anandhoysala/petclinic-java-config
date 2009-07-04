@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @author TwinP
  */
 @Entity
-@Table(name="types")
+@Table(name="TYPES")
 public class PetType extends NamedEntity{
 
 }

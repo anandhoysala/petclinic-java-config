@@ -13,7 +13,7 @@ import com.spring66.petclinic.service.Clinic;
 import java.util.Collection;
 import java.util.Date;
 import org.junit.Test;
-import org.spring66.petclinic.util.EntityUtils;
+import com.spring66.petclinic.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.config.java.test.JavaConfigContextLoader;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  *
  * @author twinp
  */
-@ContextConfiguration(locations = "org.spring66.petclinic.config.JpaPetclinicApplicationConfig",
+@ContextConfiguration(locations = "com.spring66.petclinic.config.JpaPetclinicApplicationConfig",
 loader = JavaConfigContextLoader.class)
 public class ClinicJPATest extends AbstractTransactionalJUnit4SpringContextTests {
 
@@ -36,7 +36,6 @@ public class ClinicJPATest extends AbstractTransactionalJUnit4SpringContextTests
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-
     @Test
     public void testGetVets() {
         Collection<Vet> vets = this.clinic.getVets();
@@ -80,7 +79,7 @@ public class ClinicJPATest extends AbstractTransactionalJUnit4SpringContextTests
         assertTrue(o1.getLastName().startsWith("Franklin"));
         Owner o10 = this.clinic.loadOwner(10);
         assertEquals("Carlos", o10.getFirstName());
-
+        System.out.println("Pets=>" + o1.getPets().size());
         // Check lazy loading, by ending the transaction
         // endTransaction();
 
@@ -130,7 +129,8 @@ public class ClinicJPATest extends AbstractTransactionalJUnit4SpringContextTests
         o6 = this.clinic.loadOwner(6);
         assertEquals(found + 1, o6.getPets().size());
     }
-        @Test
+
+    @Test
     public void testUpdatePet() throws Exception {
         Pet p7 = this.clinic.loadPet(7);
         String old = p7.getName();
@@ -144,12 +144,17 @@ public class ClinicJPATest extends AbstractTransactionalJUnit4SpringContextTests
     public void testInsertVisit() {
         Pet p7 = this.clinic.loadPet(7);
         int found = p7.getVisits().size();
+        System.out.println("Found->" + found);
         Visit visit = new Visit();
         p7.addVisit(visit);
         visit.setDescription("test");
+        visit.setName("name");
+
+        visit.setVisitDate(new Date());
         this.clinic.storePet(p7);
         // assertTrue(!visit.isNew()); -- NOT TRUE FOR TOPLINK (before commit)
         p7 = this.clinic.loadPet(7);
+        //System.out.println("found+1->"+p7.getVisits().size()+"info->"+p7.getVisits().iterator().next().getId());*/
         assertEquals(found + 1, p7.getVisits().size());
     }
 }

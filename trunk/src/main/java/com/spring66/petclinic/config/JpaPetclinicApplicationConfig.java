@@ -29,20 +29,34 @@ import org.springframework.transaction.PlatformTransactionManager;
 public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport {
 
     // Each of the following @ExternalValues are provided by db/jdbc.properties
-    abstract @ExternalValue("jpa.showSql") boolean showJpaSql();
+    abstract 
+    @ExternalValue("jpa.showSql")
+    boolean showJpaSql();
 
-    abstract @ExternalValue("jpa.database") String databaseType();
+    abstract 
+    @ExternalValue("jpa.database")
+    String databaseType();
 
-    abstract @ExternalValue("hibernate.show_sql") boolean showSql();
+    abstract 
+    @ExternalValue("hibernate.show_sql")
+    boolean showSql();
 
-    abstract @ExternalValue("hibernate.hbm2ddl.auto") String hbm2ddlAuto();
+    abstract 
+    @ExternalValue("hibernate.hbm2ddl.auto")
+    String hbm2ddlAuto();
 
-    abstract @ExternalValue("hibernate.generate_statistics") boolean generateStatistics();
+    abstract 
+    @ExternalValue("hibernate.generate_statistics")
+    boolean generateStatistics();
 
-    abstract @ExternalValue("hibernate.dialect") String databasePlatform();
+    abstract 
+    @ExternalValue("hibernate.dialect")
+    String databasePlatform();
 
     /** Provided by {@link EmbeddedDataSourceConfig#dataSource()} */
-    abstract @ExternalBean DataSource dataSource();
+    abstract 
+    @ExternalBean
+    DataSource dataSource();
 
     /**
      * PetClinic's central data access object using JPA EntityManager
@@ -50,7 +64,9 @@ public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport
      * Note that {@link EntityManagerClinic} uses {@code @PersistenceContext} to
      * inject an {@link EntityManager} instance created by {@link #entityManagerFactory()}.
      */
-    public @Bean Clinic clinic() {
+    public 
+    @Bean
+    Clinic clinic() {
         return new EntityManagerClinic();
     }
 
@@ -60,7 +76,9 @@ public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport
      * 
      * @see ConfigurationSupport#getObject(FactoryBean)
      */
-    public @Bean EntityManagerFactory entityManagerFactory() {
+    public 
+    @Bean
+    EntityManagerFactory entityManagerFactory() {
         Properties jpaProperties = new Properties();
         jpaProperties.put("hibernate.dialect", databasePlatform());
         jpaProperties.put("hibernate.show_sql", showSql());
@@ -78,7 +96,9 @@ public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport
     /**
      * JpaVendorAdapter implementation for Hibernate EntityManager.
      */
-    public @Bean JpaVendorAdapter jpaVendorAdapter() {
+    public 
+    @Bean
+    JpaVendorAdapter jpaVendorAdapter() {
         HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         adapter.setShowSql(showJpaSql());
         adapter.setDatabasePlatform(databasePlatform());
@@ -88,14 +108,18 @@ public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport
     /**
      * LoadTimeWeaver relying on VM Instrumentation.
      */
-    public @Bean LoadTimeWeaver loadTimeWeaver() {
+    public 
+    @Bean
+    LoadTimeWeaver loadTimeWeaver() {
         return new InstrumentationLoadTimeWeaver();
     }
 
     /**
      * PlatformTransactionManager implementation for a single JPA EntityManagerFactory.
      */
-    public @Bean PlatformTransactionManager transactionManager() {
+    public 
+    @Bean
+    PlatformTransactionManager transactionManager() {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory());
         return txManager;

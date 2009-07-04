@@ -17,13 +17,11 @@ package com.spring66.petclinic.service;
 
 import java.util.Collection;
 
-import com.spring66.petclinic.entity.BaseEntity;
 import com.spring66.petclinic.entity.Owner;
 import com.spring66.petclinic.entity.Pet;
 import com.spring66.petclinic.entity.PetType;
 import com.spring66.petclinic.entity.Vet;
 import com.spring66.petclinic.entity.Visit;
-import org.springframework.dao.DataAccessException;
 
 /**
  * The high-level PetClinic business interface.
@@ -43,4 +41,6 @@ public interface Clinic {
     public Owner loadOwner(int id);
     public void storePet(Pet pet);
     public Pet loadPet(int id);
+    public void storeVisit(Visit visit);
+    //public Troop loadTroop(int id);vv
 }

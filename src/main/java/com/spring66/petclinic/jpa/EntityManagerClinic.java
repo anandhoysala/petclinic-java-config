@@ -15,22 +15,4 @@ public class EntityManagerClinic implements Clinic {
     
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Transactional(readOnly = true)
-    @SuppressWarnings("unchecked")
-    @Override
-    public Collection<Owner> findOwners(String lastName) {
-        Query query = this.entityManager.createQuery("SELECT owner FROM Owner owner WHERE owner.lastName LIKE :lastName");
-        query.setParameter("lastName", lastName + "%");
-        return query.getResultList();
-    }
-
-    @Override
-    public void storeOwner(Owner owner) {
-        // Consider returning the persistent object here, for exposing
-        // a newly assigned id using any persistence provider...
-        Owner merged = this.entityManager.merge(owner);
-        this.entityManager.flush();
-        owner.setId(merged.getId());
-    }
 }

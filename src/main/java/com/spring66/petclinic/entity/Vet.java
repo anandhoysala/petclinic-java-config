@@ -28,7 +28,7 @@ import org.springframework.beans.support.PropertyComparator;
  * @author TwinP
  */
 @Entity
-@Table(name="Vets")
+@Table(name="VETS")
 public class Vet extends Person {
 
     private Collection<Specialty> specialties;

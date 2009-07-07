@@ -20,6 +20,7 @@ import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -52,6 +53,10 @@ public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport
     abstract 
     @ExternalValue("hibernate.dialect")
     String databasePlatform();
+
+    abstract 
+    @ExternalValue("jpa.database")
+    Database database();
 
     /** Provided by {@link EmbeddedDataSourceConfig#dataSource()} */
     abstract 
@@ -102,6 +107,7 @@ public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport
         HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         adapter.setShowSql(showJpaSql());
         adapter.setDatabasePlatform(databasePlatform());
+        adapter.setDatabase(database());
         return adapter;
     }
 

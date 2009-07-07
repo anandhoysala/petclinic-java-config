@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.config.java.test.JavaConfigContextLoader;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import static org.junit.Assert.*;
 
 /**
@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
  */
 @ContextConfiguration(locations = "com.spring66.petclinic.config.JpaPetclinicApplicationConfig",
 loader = JavaConfigContextLoader.class)
-public class NewEmptyJUnitTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class NewEmptyJUnitTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     protected Clinic clinic;
@@ -42,15 +42,7 @@ public class NewEmptyJUnitTest extends AbstractTransactionalJUnit4SpringContextT
     // The methods must be annotated with annotation @Test. For example:
     //
     @Test
-    public void hello() {
-        System.out.println("hello world");
-        //Collection<Owner> owners = this.clinic.findOwners("Schultz");
-        //int found = owners.size();
-        Owner owner = new Owner();
-        owner.setLastName("Schultz");
-        this.clinic.storeOwner(owner);
-        // assertTrue(!owner.isNew()); -- NOT TRUE FOR TOPLINK (before commit)
-        Collection<Owner> owners = this.clinic.findOwners("Schultz");
-        assertEquals( 1, owners.size());
+    public void isClinicServiceReady() {
+        assertNotNull(clinic);
     }
 }

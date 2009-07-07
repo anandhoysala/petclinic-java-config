@@ -42,5 +42,4 @@ public interface Clinic {
     public void storePet(Pet pet);
     public Pet loadPet(int id);
     public void storeVisit(Visit visit);
-    //public Troop loadTroop(int id);vv
 }

@@ -20,7 +20,7 @@ import org.hibernate.annotations.OrderBy;
  * @author TwinP
  */
 @Entity
-@Table(name = "owners")
+@Table(name = "OWNERS")
 public class Owner extends Person {
 
     private String address;

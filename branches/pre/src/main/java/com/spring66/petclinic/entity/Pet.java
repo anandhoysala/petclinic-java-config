@@ -29,7 +29,7 @@ import org.hibernate.annotations.OrderBy;
  * @author Emmanuel Bernard
  */
 @Entity
-@Table(name = "pets")
+@Table(name = "PETS")
 public class Pet {
 
     private Integer id;

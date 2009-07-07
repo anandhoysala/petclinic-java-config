@@ -36,6 +36,4 @@ import org.springframework.dao.DataAccessException;
  * @author Sam Brannen
  */
 public interface Clinic {
-    public Collection<Owner> findOwners(String lastName);
-    public void storeOwner(Owner owner);
 }

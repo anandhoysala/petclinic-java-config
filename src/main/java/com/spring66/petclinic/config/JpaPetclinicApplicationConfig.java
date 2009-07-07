@@ -1,4 +1,4 @@
-package org.spring66.petclinic.config;
+package com.spring66.petclinic.config;
 
 import com.spring66.petclinic.service.Clinic;
 import java.util.Properties;
@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.spring66.petclinic.jpa.EntityManagerClinic;
+import com.spring66.petclinic.jpa.EntityManagerClinic;
 import org.springframework.config.java.annotation.Bean;
 import org.springframework.config.java.annotation.Configuration;
 import org.springframework.config.java.annotation.ExternalBean;
@@ -22,7 +22,6 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.web.context.ContextLoaderListener;
 
 @Configuration
 @Import({PetclinicApplicationConfig.class, ExternalDataSourceConfig.class})

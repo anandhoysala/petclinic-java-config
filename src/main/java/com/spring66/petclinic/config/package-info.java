@@ -17,4 +17,4 @@
  * Spring JavaConfig {@code @Configuration} classes used to configure
  * the Petclinic application and DispatcherServlet
  */
-package org.spring66.petclinic.config;
+package com.spring66.petclinic.config;

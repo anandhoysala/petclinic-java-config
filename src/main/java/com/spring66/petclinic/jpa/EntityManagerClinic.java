@@ -1,4 +1,4 @@
-package org.spring66.petclinic.jpa;
+package com.spring66.petclinic.jpa;
 
 import com.spring66.petclinic.entity.Owner;
 import com.spring66.petclinic.service.Clinic;

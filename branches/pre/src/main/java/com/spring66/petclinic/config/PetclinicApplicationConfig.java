@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.spring66.petclinic.config;
+package com.spring66.petclinic.config;
 
 import static org.springframework.config.java.plugin.context.RegistrationPolicy.REPLACE_EXISTING;
 

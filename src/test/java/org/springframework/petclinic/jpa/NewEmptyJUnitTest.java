@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  *
  * @author twinp
  */
-@ContextConfiguration(locations = "org.spring66.petclinic.config.JpaPetclinicApplicationConfig",
+@ContextConfiguration(locations = "com.spring66.petclinic.config.JpaPetclinicApplicationConfig",
 loader = JavaConfigContextLoader.class)
 public class NewEmptyJUnitTest extends AbstractTransactionalJUnit4SpringContextTests {
 

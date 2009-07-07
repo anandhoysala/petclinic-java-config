@@ -198,6 +198,54 @@
                     </execution>
                 </executions>
             </plugin-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dbunit-maven-plugin</artifactId>
+                <version>1.0-beta-2</version>
+
+        <!--jar file that has the jdbc driver -->
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.6</version>
+                    </dependency>
+                </dependencies>
+
+        <!-- common configurations -->
+                <configuration>
+                    <driver>com.mysql.jdbc.Driver</driver>
+                    <url>jdbc:mysql://localhost:3306/petclinic_dev</url>
+                    <username>root</username>
+                    <password>password</password>
+
+                </configuration>
+
+                <executions>
+                    <!--execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>export</goal>
+                        </goals>
+                        <configuration>
+                            <format>xml</format>
+                            <dest>target/dbunit/export.xml</dest>
+                        </configuration>
+                    </execution-->
+                    <!--execution>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>operation</goal>
+                        </goals>
+                        <configuration>
+                            <type>CLEAN_INSERT</type>
+                            <src>src/test/data/insert.xml</src>
+                        </configuration>
+                    </execution-->
+
+                </executions>
+
+            </plugin>
         </plugins>
     </build>
 </project>

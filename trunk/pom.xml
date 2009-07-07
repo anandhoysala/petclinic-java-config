@@ -215,7 +215,7 @@
         <!-- common configurations -->
                 <configuration>
                     <driver>com.mysql.jdbc.Driver</driver>
-                    <url>jdbc:mysql://localhost:3306/test</url>
+                    <url>jdbc:mysql://localhost:3306/petclinic</url>
                     <username>root</username>
                     <password>password</password>
 

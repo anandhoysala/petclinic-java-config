@@ -31,12 +31,8 @@ public class ApplicationContextTest extends AbstractTransactionalJUnit4SpringCon
     // The methods must be annotated with annotation @Test. For example:
     //
     @Test
-    public void testGetVets() {
-        Collection<Vet> vets = this.clinic.getVets();
-        // Use the inherited countRowsInTable() convenience method (from
-        // AbstractTransactionalDataSourceSpringContextTests) to verify the
-        // results.
-        assertEquals("JDBC query must show the same number of vets", super.countRowsInTable("VETS"), vets.size());
+    public void isClinicServiceReady() {
+		assertNotNull(clinic);
     }
 
 

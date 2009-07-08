@@ -1,4 +1,3 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -215,7 +214,7 @@
         <!-- common configurations -->
                 <configuration>
                     <driver>com.mysql.jdbc.Driver</driver>
-                    <url>jdbc:mysql://localhost:3306/petclinic</url>
+                    <url>jdbc:mysql://localhost:3306/petclinic_dev</url>
                     <username>root</username>
                     <password>password</password>
 
@@ -227,7 +226,6 @@
                         <goals>
                             <goal>export</goal>
                         </goals>
-            
                         <configuration>
                             <format>xml</format>
                             <dest>target/dbunit/export.xml</dest>
@@ -238,15 +236,43 @@
                         <goals>
                             <goal>operation</goal>
                         </goals>
-          
                         <configuration>
                             <type>CLEAN_INSERT</type>
                             <src>src/test/data/insert.xml</src>
                         </configuration>
                     </execution-->
+
                 </executions>
 
             </plugin>
         </plugins>
     </build>
+
+
+ <repositories>
+        <!-- Necessary if using snapshot builds of SpringSource products (as above) -->
+        <repository>
+            <id>SpringSource Enterprise Bundle Repository - External Bundle Snapshots</id>
+            <url>http://repository.springsource.com/maven/bundles/snapshot</url>
+        </repository>
+
+        <!-- Required, as Spring JavaConfig has dependencies on released versions of SpringSource products -->
+        <repository>
+            <id>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</id>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
+
+        <!-- Required, as Spring JavaConfig has dependencies on External OSGi bundles -->
+        <repository>
+            <id>SpringSource Enterprise Bundle Repository - External Bundle Releases</id>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+
+        <!-- Required for Hibernate dependencies -->
+        <repository>
+          <id>JBoss Repository</id>
+          <url>http://repository.jboss.org/maven2</url>
+        </repository>
+    </repositories>
+
 </project>

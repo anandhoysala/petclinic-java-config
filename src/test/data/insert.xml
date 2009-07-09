@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <table name="owners">
+  <table name="OWNERS">
     <column>id</column>
     <column>firstName</column>
     <column>lastName</column>
@@ -88,7 +88,35 @@
       <value>6085555487</value>
     </row>
   </table>
-  <table name="pets">
+  <table name="TYPES">
+    <column>id</column>
+    <column>name</column>
+    <row>
+      <value>1</value>
+      <value>cat</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>xx</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>aa</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>snake</value>
+    </row>
+    <row>
+      <value>5</value>
+      <value>oo</value>
+    </row>
+    <row>
+      <value>6</value>
+      <value>bb</value>
+    </row>
+  </table>
+  <table name="PETS">
     <column>id</column>
     <column>name</column>
     <column>birthDate</column>
@@ -186,7 +214,7 @@
       <value>10</value>
     </row>
   </table>
-  <table name="specialties">
+  <table name="SPECIALTIES">
     <column>id</column>
     <column>name</column>
     <row>
@@ -202,35 +230,7 @@
       <value>surgery</value>
     </row>
   </table>
-  <table name="types">
-    <column>id</column>
-    <column>name</column>
-    <row>
-      <value>1</value>
-      <value>cat</value>
-    </row>
-    <row>
-      <value>2</value>
-      <value>xx</value>
-    </row>
-    <row>
-      <value>3</value>
-      <value>aa</value>
-    </row>
-    <row>
-      <value>4</value>
-      <value>snake</value>
-    </row>
-    <row>
-      <value>5</value>
-      <value>oo</value>
-    </row>
-    <row>
-      <value>6</value>
-      <value>bb</value>
-    </row>
-  </table>
-  <table name="vets">
+  <table name="VETS">
     <column>id</column>
     <column>firstName</column>
     <column>lastName</column>
@@ -265,7 +265,7 @@
       <value>Jenkins</value>
     </row>
   </table>
-  <table name="vets_specialties">
+  <table name="VETS_SPECIALTIES">
     <column>vet_id</column>
     <column>name</column>
     <row>
@@ -281,7 +281,7 @@
       <value>3</value>
     </row>
   </table>
-  <table name="visits">
+  <table name="VISITS">
     <column>id</column>
     <column>description</column>
     <column>name</column>

@@ -30,36 +30,36 @@ import org.springframework.transaction.PlatformTransactionManager;
 public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport {
 
     // Each of the following @ExternalValues are provided by db/jdbc.properties
-    abstract 
+    protected abstract 
     @ExternalValue("jpa.showSql")
     boolean showJpaSql();
 
-    abstract 
+    protected abstract 
     @ExternalValue("jpa.database")
     String databaseType();
 
-    abstract 
+    protected abstract 
     @ExternalValue("hibernate.show_sql")
     boolean showSql();
 
-    abstract 
+    protected abstract 
     @ExternalValue("hibernate.hbm2ddl.auto")
     String hbm2ddlAuto();
 
-    abstract 
+    protected abstract 
     @ExternalValue("hibernate.generate_statistics")
     boolean generateStatistics();
 
-    abstract 
+    protected abstract 
     @ExternalValue("hibernate.dialect")
     String databasePlatform();
 
-    abstract 
+    protected abstract 
     @ExternalValue("jpa.database")
     Database database();
 
     /** Provided by {@link EmbeddedDataSourceConfig#dataSource()} */
-    abstract 
+    protected abstract 
     @ExternalBean
     DataSource dataSource();
 

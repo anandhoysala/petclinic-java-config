@@ -21,12 +21,12 @@ import static com.spring66.petclinic.web.PageType.SHOW;
 
 public class ViewUtils {
     
-    static final String PET_OBJ_NAME = "pet";
-    static final String OWNER = "owner";
-    static final String OWNER_LIST_VIEW = format("%s/%s", OWNER, LIST);
-    static final String OWNER_SHOW_REDIRECT = format("redirect:../%s/%s?id=", OWNER, SHOW);
+	public static final String PET_OBJ_NAME = "pet";
+    public static final String OWNER = "owner";
+    public static final String OWNER_LIST_VIEW = format("%s/%s", OWNER, LIST);
+    public static final String OWNER_SHOW_REDIRECT = format("redirect:../%s/%s?id=", OWNER, SHOW);
 
-    static final String DEFAULT_VIEW = null;
+    public static final String DEFAULT_VIEW = null;
 
     private ViewUtils() { }
 

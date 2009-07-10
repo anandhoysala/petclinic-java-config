@@ -55,7 +55,6 @@ import org.springframework.config.java.annotation.valuesource.PropertiesValueSou
  * @author Chris Beams
  */
 @Configuration
-@PropertiesValueSource(locations="db/jdbc.properties")
 public abstract class ExternalDataSourceConfig {
 
     abstract @ExternalValue("jdbc.driverClassName") String driverClassName();

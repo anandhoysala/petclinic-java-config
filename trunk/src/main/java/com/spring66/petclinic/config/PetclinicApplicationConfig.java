@@ -17,8 +17,9 @@ package com.spring66.petclinic.config;
 
 import static org.springframework.config.java.plugin.context.RegistrationPolicy.REPLACE_EXISTING;
 
-import org.springframework.config.java.annotation.Bean;
 import org.springframework.config.java.annotation.Configuration;
+import org.springframework.config.java.annotation.Import;
+import org.springframework.config.java.annotation.valuesource.PropertiesValueSource;
 import org.springframework.config.java.context.JavaConfigApplicationContext;
 import org.springframework.config.java.context.JavaConfigWebApplicationContext;
 import org.springframework.config.java.plugin.aop.AspectJAutoProxy;
@@ -26,6 +27,8 @@ import org.springframework.config.java.plugin.context.AnnotationDrivenConfig;
 import org.springframework.config.java.plugin.context.MBeanExport;
 import org.springframework.config.java.plugin.tx.AnnotationDrivenTx;
 import org.springframework.web.context.ContextLoaderListener;
+
+import com.spring66.petclinic.service.Clinic;
 
 
 /**
@@ -102,6 +105,8 @@ import org.springframework.web.context.ContextLoaderListener;
 @AnnotationDrivenTx(proxyTargetClass=true)
 @AspectJAutoProxy(proxyTargetClass=true)
 @MBeanExport(registration=REPLACE_EXISTING)
+@Import(JpaPetclinicApplicationConfig.class)
+@PropertiesValueSource(locations = "classpath:db/jdbc.properties")
 public class PetclinicApplicationConfig {
     
 

@@ -33,16 +33,15 @@ public class BaseEntity implements Serializable {
     public boolean isNew() {
         return (this.id == null);
     }
-
-    @Override
+    /*@Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        BaseEntity be = (BaseEntity)o;
-        if (!id.equals(be.id)) {
-            return false;
-        }
-        return true;
+    if (this == o) {
+    return true;
     }
+    BaseEntity be = (BaseEntity)o;
+    if (!id.equals(be.id)) {
+    return false;
+    }
+    return true;
+    }*/
 }

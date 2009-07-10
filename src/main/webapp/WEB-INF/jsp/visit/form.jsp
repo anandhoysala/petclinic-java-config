@@ -1,5 +1,23 @@
 <%@ include file="/WEB-INF/jsp/includes.jsp" %>
 <%@ include file="/WEB-INF/jsp/header.jsp" %>
+<link type="text/css" href="<c:url value='/styles/base/ui.all.css'/>" rel="stylesheet" />
+<script type="text/javascript" src="<c:url value='/js/jquery-1.3.2.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/ui/ui.core.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/ui/ui.datepicker.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/ui/ui.datepicker-th.js'/>"></script>
+
+<script type="text/javascript">
+    $(function() {
+        $.datepicker.setDefaults($.extend({showMonthAfterYear: false}, $.datepicker.regional['th']));
+
+        $("#visitDate").datepicker({
+            dateFormat:'yy-mm-dd',
+            changeMonth: true,
+            changeYear: true
+        });
+       
+    });
+</script>
 
 <h2><c:if test="${visit.new}">New </c:if>Visit:</h2>
 

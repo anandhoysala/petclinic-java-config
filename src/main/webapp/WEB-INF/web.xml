@@ -25,7 +25,7 @@
         <param-name>contextConfigLocation</param-name>
     <!-- Configure the required data access layer : JDBC or JPA -->      
     <!-- <param-value>org.springframework.samples.petclinic.config.JpaPetclinicApplicationConfig</param-value> -->
-        <param-value>com.spring66.petclinic.config.JpaPetclinicApplicationConfig</param-value>
+        <param-value>com.spring66.petclinic.config.PetclinicApplicationConfig</param-value>
     </context-param>
     <filter>
         <filter-name>encodingFilter</filter-name>

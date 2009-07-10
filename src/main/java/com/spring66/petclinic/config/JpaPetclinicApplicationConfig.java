@@ -25,8 +25,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-@Import({PetclinicApplicationConfig.class, ExternalDataSourceConfig.class})
-@PropertiesValueSource(locations = "classpath:db/jdbc.properties")
+@Import(ExternalDataSourceConfig.class)
 public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport {
 
     // Each of the following @ExternalValues are provided by db/jdbc.properties

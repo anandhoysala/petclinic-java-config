@@ -4,16 +4,20 @@
  */
 package org.springframework.petclinic.web;
 
-import com.spring66.petclinic.service.Clinic;
-import com.spring66.petclinic.web.OwnerController;
 import org.easymock.EasyMock;
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.bind.support.SimpleSessionStatus;
+import static org.junit.Assert.assertEquals;
+
+import com.spring66.petclinic.entity.Owner;
+import com.spring66.petclinic.service.Clinic;
+import com.spring66.petclinic.web.OwnerController;
 
 /**
  *
@@ -35,5 +39,16 @@ public class OwnerControllerTest {
 
         clinic = EasyMock.createMock(Clinic.class);
         ownerController = new OwnerController(clinic);
+    }
+    
+    @Test
+    public void newRequest() {
+    	Owner owner = new Owner();
+    	owner.setId(1);
+    	EasyMock.expect(clinic.loadOwner(1)).andReturn(owner);
+    	EasyMock.replay(clinic);
+    	
+    	Owner result = ownerController.newRequest(1);
+    	assertEquals(owner, result);
     }
 }

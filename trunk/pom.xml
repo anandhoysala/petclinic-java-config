@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.springframework.javaconfig</groupId>
             <artifactId>org.springframework.config.java</artifactId>
-            <version>1.0.0.BUILD-SNAPSHOT</version>
+            <version>1.0.0.M4</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -177,6 +177,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.4.4</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>maven2example</finalName>
@@ -249,6 +255,7 @@
                         <configuration>
                             <type>CLEAN_INSERT</type>
                             <src>src/test/data/insert.xml</src>
+                            <dataTypeFactoryName>org.dbunit.ext.mysql.MySqlDataTypeFactory</dataTypeFactoryName>
                         </configuration>
                     </execution-->
 
@@ -260,10 +267,10 @@
 
 
  <repositories>
-        <!-- Necessary if using snapshot builds of SpringSource products (as above) -->
+        <!-- Necessary if using milestone builds of SpringSource products (as above) -->
         <repository>
-            <id>SpringSource Enterprise Bundle Repository - External Bundle Snapshots</id>
-            <url>http://repository.springsource.com/maven/bundles/snapshot</url>
+            <id>SpringSource Enterprise Milestone Repository - External Milestone Snapshots</id>
+            <url>http://repository.springsource.com/maven/bundles/milestone</url>
         </repository>
 
         <!-- Required, as Spring JavaConfig has dependencies on released versions of SpringSource products -->

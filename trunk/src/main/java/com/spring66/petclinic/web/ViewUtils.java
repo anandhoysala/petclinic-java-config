@@ -21,7 +21,7 @@ import static com.spring66.petclinic.web.PageType.SHOW;
 
 public class ViewUtils {
     
-	public static final String PET_OBJ_NAME = "pet";
+    public static final String PET_OBJ_NAME = "pet";
     public static final String OWNER = "owner";
     public static final String OWNER_LIST_VIEW = format("%s/%s", OWNER, LIST);
     public static final String OWNER_SHOW_REDIRECT = format("redirect:../%s/%s?id=", OWNER, SHOW);

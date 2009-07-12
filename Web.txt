@@ -1,0 +1,683 @@
+
+====JpaPetclinicApplicationConfig====
+@Configuration
+public abstract class JpaPetclinicApplicationConfig extends ConfigurationSupport {
+    public @Bean Clinic clinic() {
+        return new EntityManagerClinic();
+    }
+}
+
+
+====ListDataServiceTest========
+    @Autowired
+    protectd ListDataService ldService;
+    
+    @Test
+    public void testListDataService(){
+        assertNotNull(listDataService);
+        assertEquals(3, listDataService.getElementsList().size());
+        assertEquals("I", listDataService.getElementsList().get(0));
+        assertEquals("Love", listDataService.getElementsList().get(1));
+        assertEquals("Java", listDataService.getElementsList().get(2));
+    }
+	
+====DataSource=============
+
+    //DataSource
+    abstract @ExternalValue("jdbc.driverClassName") String driverClassName();
+    abstract @ExternalValue("jdbc.url") String url();
+    abstract @ExternalValue("jdbc.username") String username();
+    abstract @ExternalValue("jdbc.password") String password();
+
+    /**
+     * Uses Apache Commons DBCP for connection pooling. See Commons DBCP
+     * documentation for the required JAR files. Alternatively you can use
+     * another connection pool such as C3P0, similarly configured using Spring.
+     */
+    public @Bean DataSource dataSource() {
+        BasicDataSource dataSource = new BasicDataSource();
+
+        dataSource.setDriverClassName(driverClassName());
+        dataSource.setUrl(url());
+        dataSource.setUsername(username());
+        dataSource.setPassword(password());
+        return dataSource;
+    }
+====Properties Annotation=====
+@PropertiesValueSource(locations="db/jdbc.properties")
+
+====EntityManager===============
+    // Each of the following @ExternalValues are provided by db/jdbc.properties
+    abstract @ExternalValue("jpa.showSql") boolean showJpaSql();
+
+    abstract @ExternalValue("jpa.database") String databaseType();
+
+    abstract @ExternalValue("hibernate.show_sql") boolean showSql();
+
+    abstract @ExternalValue("hibernate.hbm2ddl.auto") String hbm2ddlAuto();
+
+    abstract @ExternalValue("hibernate.generate_statistics") boolean generateStatistics();
+
+    abstract @ExternalValue("hibernate.dialect") String databasePlatform();
+
+
+    /**
+     * FactoryBean that creates a JPA EntityManagerFactory according to JPA's standard
+     * container bootstrap contract.
+     * 
+     * @see ConfigurationSupport#getObject(FactoryBean)
+     */
+    public @Bean EntityManagerFactory entityManagerFactory() {
+        Properties jpaProperties = new Properties();
+        jpaProperties.put("hibernate.dialect", databasePlatform());
+        jpaProperties.put("hibernate.show_sql", showSql());
+        jpaProperties.put("hibernate.generate_statistics", generateStatistics());
+        jpaProperties.put("hibernate.hbm2ddl.auto", hbm2ddlAuto());
+
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setJpaProperties(jpaProperties);
+        em.setDataSource(dataSource());
+        em.setJpaVendorAdapter(jpaVendorAdapter());
+        em.setLoadTimeWeaver(loadTimeWeaver());
+        return this.getObject(em, EntityManagerFactory.class);
+    }
+
+    /**
+     * JpaVendorAdapter implementation for Hibernate EntityManager.
+     */
+    public @Bean JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        adapter.setShowSql(showJpaSql());
+        adapter.setDatabasePlatform(databasePlatform());
+        return adapter;
+    }
+
+    /**
+     * LoadTimeWeaver relying on VM Instrumentation.
+     */
+    public @Bean LoadTimeWeaver loadTimeWeaver() {
+        return new InstrumentationLoadTimeWeaver();
+    }
+
+    /**
+     * PlatformTransactionManager implementation for a single JPA EntityManagerFactory.
+     */
+    public @Bean PlatformTransactionManager transactionManager() {
+        JpaTransactionManager txManager = new JpaTransactionManager();
+        txManager.setEntityManagerFactory(entityManagerFactory());
+        return txManager;
+    }
+	
+====AnnotationDrivenConfig==============
+@AnnotationDrivenConfig
+
+====EntityUtil==============
+public abstract class EntityUtils {
+
+    /**
+     * Look up the entity of the given class with the given id in the given
+     * collection.
+     *
+     * @param entities the collection to search
+     * @param entityClass the entity class to look up
+     * @param entityId the entity id to look up
+     * @return the found entity
+     * @throws ObjectRetrievalFailureException if the entity was not found
+     */
+    public static <T extends BaseEntity> T getById(Collection<T> entities, Class<T> entityClass, int entityId)
+            throws ObjectRetrievalFailureException {
+        for (T entity : entities) {
+            if (entity.getId().intValue() == entityId && entityClass.isInstance(entity)) {
+                return entity;
+            }
+        }
+        throw new ObjectRetrievalFailureException(entityClass, new Integer(entityId));
+    }
+
+==== ClinicJPA Annotation =======
+
+	@Repository
+	@Transactional
+	
+==== Clinic getVets ===========
+    @PersistenceContext
+    private EntityManager entityManager;
+	
+	@Override
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    public Collection<Vet> getVets() {
+        return this.entityManager.createQuery("SELECT vet FROM Vet vet ORDER BY vet.lastName, vet.firstName").getResultList();
+    }
+	
+====getPetTypes====
+    @Override
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    public Collection<PetType> getPetTypes() {
+        return this.entityManager.createQuery("SELECT ptype FROM PetType ptype ORDER BY ptype.name").getResultList();
+    }
+	
+====findOwners=========
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    @Override
+    public Collection<Owner> findOwners(String lastName) {
+        Query query = this.entityManager.createQuery("SELECT owner FROM Owner owner WHERE owner.lastName LIKE :lastName");
+        query.setParameter("lastName", lastName + "%");
+        return query.getResultList();
+    }	
+	
+====loadOwner=========
+    @Override
+    @Transactional(readOnly = true)
+    public Owner loadOwner(int id) {
+        return this.entityManager.find(Owner.class, id);
+    }
+	
+====storeOwner=========
+    @Override
+    public void storeOwner(Owner owner) {
+        // Consider returning the persistent object here, for exposing
+        // a newly assigned id using any persistence provider...
+        Owner merged = this.entityManager.merge(owner);
+        this.entityManager.flush();
+        owner.setId(merged.getId());
+    }
+	
+====loadPet==============
+    @Override
+    @Transactional(readOnly = true)
+    public Pet loadPet(int id) {
+        return this.entityManager.find(Pet.class, id);
+    }
+
+====storePet==============
+    @Override
+    public void storePet(Pet pet) {
+        // Consider returning the persistent object here, for exposing
+        // a newly assigned id using any persistence provider...
+        Pet merged = this.entityManager.merge(pet);
+        this.entityManager.flush();
+        pet.setId(merged.getId());
+    }
+====web.xml================
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                             http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+
+    <display-name>Spring JavaConfig PetClinic</display-name>
+    <description>Spring PetClinic application demonstrating use of Spring JavaConfig</description>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>petclinicJavaConfig.root</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.springframework.config.java.context.JavaConfigWebApplicationContext</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+    <!-- Configure the required data access layer : JDBC or JPA -->      
+    <!-- <param-value>org.springframework.samples.petclinic.config.JpaPetclinicApplicationConfig</param-value> -->
+        <param-value>com.spring66.petclinic.config.JpaPetclinicApplicationConfig</param-value>
+    </context-param>
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>openEntityManagerInViewFilter</filter-name>
+        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>openEntityManagerInViewFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>petclinic</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextClass</param-name>
+            <param-value>org.springframework.config.java.context.JavaConfigWebApplicationContext</param-value>
+        </init-param>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>com.spring66.petclinic.config.PetclinicServletConfig</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>petclinic</servlet-name>
+        <url-pattern>/main/*</url-pattern>
+    </servlet-mapping>
+  
+    <welcome-file-list>
+        <welcome-file>main</welcome-file>
+    </welcome-file-list>
+</web-app>
+
+====
+	
+====WelcomeController======
+@Controller
+public class WelcomeController {
+    @RequestMapping
+    public String welcome() {
+        return "welcome";
+    }   
+}
+
+====TestVetController====
+public class VetControllerTests {
+    @Test
+    public void list() {
+        Clinic clinic = EasyMock.createMock(Clinic.class);
+        Collection<Vet> expected = new ArrayList<Vet>();
+        EasyMock.expect(clinic.getVets()).andReturn(expected);
+        EasyMock.replay(clinic);
+
+        VetController vetController = new VetController(clinic);
+
+        Collection<Vet> actual = vetController.list();
+        assertThat(actual, is(expected));
+        EasyMock.verify(clinic);
+    }
+}
+
+====VetController====
+@Controller
+public class VetController {
+    
+    private Clinic clinic;
+    
+    @Autowired
+    public VetController(Clinic clinic) {
+        this.clinic = clinic;
+    }
+    
+    @RequestMapping
+    public Collection<Vet> list(){
+        return this.clinic.getVets();
+    }
+}
+
+====SearchOwnerController====
+    @RequestMapping(method = RequestMethod.GET, params = "submit")
+    public String find(Owner owner, BindingResult result, Model model) {
+        // find owners by last name
+        Collection<Owner> results = this.clinic.findOwners(owner.getLastName());
+        if (results.size() < 1) {
+            // no owners found
+            result.rejectValue("lastName", "notFound", "not found");
+            return DEFAULT_VIEW;
+        }
+        if (results.size() > 1) {
+            // multiple owners found
+            model.addAttribute(results);
+            return OWNER_LIST_VIEW;
+        } else {
+            // 1 owner found
+            owner = results.iterator().next();
+            return getRedirectForOwner(owner);
+        }
+    }
+====PetClinicServlet=======
+@Configuration
+@ComponentScan("com.spring66.petclinic.web")
+public class PetclinicServletConfig extends ConfigurationSupport {
+
+    /** @see ClinicBindingInitializer */
+    public @Bean WebBindingInitializer clinicBindingInitializer() {
+        return new ClinicBindingInitializer();
+    }
+
+    /**
+     * This bean matches incoming requests to controllers by convention. 
+     * For example '/owner/find' is delegated to the OwnerController.find().
+     * @see ControllerClassNameHandlerMapping 
+     */
+    public @Bean ControllerClassNameHandlerMapping controllerMappings() {
+        ControllerClassNameHandlerMapping ccnhm = new ControllerClassNameHandlerMapping();
+        ccnhm.setDefaultHandler(new UrlFilenameViewController());
+        return ccnhm;
+    }
+    
+    public @Bean HandlerAdapter simpleControllerHandlerAdapter() {
+        return new SimpleControllerHandlerAdapter();
+    }
+    
+    /**
+     * This bean processes annotated handler methods, applying
+     * PetClinic-specific PropertyEditors for request parameter binding.
+     * It overrides the default AnnotationMethodHandlerAdapter.
+     */
+    public @Bean AnnotationMethodHandlerAdapter handlerAdapter() {
+        AnnotationMethodHandlerAdapter adapter = new AnnotationMethodHandlerAdapter();
+        adapter.setWebBindingInitializer(clinicBindingInitializer());
+        return adapter;
+    }
+
+    /**
+     * This bean resolves specific types of exceptions to corresponding
+     * logical view names for error views. The default behaviour of
+     * DispatcherServlet is to propagate all exceptions to the servlet
+     * container: this will happen here with all other types of exceptions.
+     */
+    public @Bean HandlerExceptionResolver exceptionResolver() {
+        Properties mappings = new Properties();
+        mappings.put(DataAccessException.class.getName(), "dataAccessFailure");
+        mappings.put(TransactionException.class.getName(), "dataAccessFailure");
+
+        SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
+        resolver.setExceptionMappings(mappings);
+
+        return resolver;
+    }
+
+    /**
+     * This bean configures the 'prefix' and 'suffix' properties of
+     * InternalResourceViewResolver, * which resolves logical view
+     * names returned by Controllers. For example, a logical view name
+     * of "vets" will be mapped to "/WEB-INF/jsp/vets.jsp".
+     */
+    public @Bean ViewResolver viewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setPrefix("/WEB-INF/jsp/");
+        resolver.setSuffix(".jsp");
+        return resolver;
+    }
+
+    /**
+     * Message source for this context, loaded from localized "messages_xx" files.
+     * Could also reside in the root application context, as it is generic,
+     * but is currently just used within PetClinic's web tier.
+     */
+    public @Bean MessageSource messageSource() {
+        ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
+        ms.setBasename("messages");
+        return ms;
+    }
+
+}	
+	
+====ClinicBinding===========
+public class ClinicBindingInitializer implements WebBindingInitializer {
+
+    @Autowired
+    private Clinic clinic;
+
+    @Override
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(false));
+        binder.registerCustomEditor(PetType.class, new PetTypeEditor(this.clinic));
+    }
+
+}
+	
+====PetTypeEditor=============
+public class PetTypeEditor extends PropertyEditorSupport {
+
+    private final Clinic clinic;
+
+    public PetTypeEditor(Clinic clinic) {
+        this.clinic = clinic;
+    }
+
+    @Override
+    public void setAsText(String text) throws IllegalArgumentException {
+        for (PetType type : this.clinic.getPetTypes()) {
+            if (type.getName().equals(text)) {
+                setValue(type);
+            }
+        }
+    }
+}
+====TestOwnerController====
+public class OwnerControllerTests {
+    private Clinic clinic;
+    private OwnerController ownerController;
+
+    private Model model;
+    private BindingResult result;
+    private SessionStatus status;
+
+    @Before
+    public void setUp() {
+        model = new ExtendedModelMap();
+        result = new MapBindingResult(model.asMap(), "owner");
+        status = new SimpleSessionStatus();
+
+        clinic = EasyMock.createMock(Clinic.class);
+        ownerController = new OwnerController(clinic);
+    }
+
+    @Test
+    public void loadOwner() {
+        Owner expected = new Owner();
+        EasyMock.expect(clinic.loadOwner(1)).andReturn(expected);
+        EasyMock.replay(clinic);
+
+        Owner actual = ownerController.newRequest(1);
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void createOwner() {
+        Owner owner = ownerController.newRequest(null);
+        assertNotNull(owner);
+    }
+
+    @Test
+    public void formWithoutErrors() {
+        Owner owner = OwnerTests.createValidOwner();
+
+        clinic.storeOwner(owner);
+        EasyMock.replay(clinic);
+
+        String viewName = ownerController.form(owner, result, status);
+
+        assertThat(viewName, equalTo(ViewUtils.getRedirectForOwner(owner)));
+        assertThat(status.isComplete(), equalTo(true));
+        EasyMock.verify(clinic);
+    }
+
+    @Test
+    public void formWithBindingErrors() {
+        EasyMock.replay(clinic); // expect no calls
+
+        Owner owner = OwnerTests.createValidOwner();
+
+        // fake a binding error
+        result.addError(new FieldError("owner", "firstName", "is required"));
+
+        String viewName = ownerController.form(owner, result, status);
+
+        assertThat(viewName, equalTo(DEFAULT_VIEW));
+        assertThat(status.isComplete(), equalTo(false));
+        EasyMock.verify(clinic);
+    }
+
+    @Test
+    public void formWithValidationErrors() {
+        EasyMock.replay(clinic); // expect no calls
+
+        Owner owner = OwnerTests.createValidOwner();
+        owner.setFirstName(""); // owner is now invalid
+
+        String viewName = ownerController.form(owner, result, status);
+
+        assertThat(viewName, equalTo(DEFAULT_VIEW));
+        assertThat(status.isComplete(), equalTo(false));
+        EasyMock.verify(clinic);
+    }
+
+    @Test
+    public void submitFindWithUnknownLastName() {
+        Owner owner = new Owner();
+        owner.setLastName("Smith");
+
+        // mock up responding to a search for 'Smith' with an empty result
+        EasyMock.expect(clinic.findOwners(owner.getLastName())).andReturn(new ArrayList<Owner>());
+        EasyMock.replay(clinic);
+
+        String viewName = ownerController.find(owner, result, model);
+
+        EasyMock.verify(clinic);
+        assertThat(viewName, equalTo(DEFAULT_VIEW));
+        assertThat(result.hasErrors(), is(true));
+        assertThat(result.getFieldError("lastName"), notNullValue());
+    }
+
+    @Test
+    public void submitFindWithLastNameMatchingMultipleOwners() {
+        Owner owner = new Owner();
+        owner.setLastName("Jones");
+
+        // mock up responding to a search for 'Jones' with two results
+        ArrayList<Owner> matches = new ArrayList<Owner>();
+        matches.add(new Owner());
+        matches.add(new Owner());
+        EasyMock.expect(clinic.findOwners(owner.getLastName())).andReturn(matches);
+        EasyMock.replay(clinic);
+
+        String viewName = ownerController.find(owner, result, model);
+
+        EasyMock.verify(clinic);
+        assertThat(viewName, equalTo(ViewUtils.OWNER_LIST_VIEW));
+        assertThat(result.hasErrors(), is(false));
+    }
+
+    @Test
+    public void submitFindWithLastNameMatchingSingleResult() {
+        Owner owner = new Owner();
+        owner.setLastName("Obscure");
+
+        // mock up responding to a search for 'Obscure' with a single result
+        ArrayList<Owner> matches = new ArrayList<Owner>();
+        Owner match1 = new Owner();
+        match1.setId(32);
+        matches.add(match1);
+        EasyMock.expect(clinic.findOwners(owner.getLastName())).andReturn(matches);
+        EasyMock.replay(clinic);
+
+        String viewName = ownerController.find(owner, result, model);
+
+        EasyMock.verify(clinic);
+        assertThat(viewName, equalTo(ViewUtils.getRedirectForOwner(match1)));
+    }
+}
+
+====AddOwnerController====
+    @ModelAttribute
+    public Owner newRequest(@RequestParam(required=false) Integer id) {
+        System.out.println("newRequest");
+        return (id != null) ? this.clinic.loadOwner(id) : new Owner();
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public void form() {
+    }
+    
+    @RequestMapping(method = RequestMethod.POST)
+    public String form(@ModelAttribute Owner owner, BindingResult result, SessionStatus status) {
+        new OwnerValidator().validate(owner, result);
+        if (result.hasErrors()) {
+            return DEFAULT_VIEW;
+        } else {
+            this.clinic.storeOwner(owner);
+            status.setComplete();
+            return getRedirectForOwner(owner);
+        }
+    }
+	
+====OwnerValidator====
+public class OwnerValidator {
+
+    public void validate(Owner owner, Errors errors) {
+        if (!StringUtils.hasLength(owner.getFirstName())) {
+            errors.rejectValue("firstName", "required", "required");
+        }
+        if (!StringUtils.hasLength(owner.getLastName())) {
+            errors.rejectValue("lastName", "required", "required");
+        }
+        if (!StringUtils.hasLength(owner.getAddress())) {
+            errors.rejectValue("address", "required", "required");
+        }
+        if (!StringUtils.hasLength(owner.getCity())) {
+            errors.rejectValue("city", "required", "required");
+        }
+
+        String telephone = owner.getTelephone();
+        if (!StringUtils.hasLength(telephone)) {
+            errors.rejectValue("telephone", "required", "required");
+        } else {
+            for (int i = 0; i < telephone.length(); ++i) {
+                if ((Character.isDigit(telephone.charAt(i))) == false) {
+                    errors.rejectValue("telephone", "nonNumeric", "non-numeric");
+                    break;
+                }
+            }
+        }
+    }
+}
+
+====ViewUtils===========
+
+public class ViewUtils {
+    static final String PET_OBJ_NAME = "pet";
+    static final String OWNER = "owner";
+    static final String OWNER_LIST_VIEW = format("%s/%s", OWNER, LIST);
+    static final String OWNER_SHOW_REDIRECT = format("redirect:../%s/%s?id=", OWNER, SHOW);
+
+    static final String DEFAULT_VIEW = null;
+
+    private ViewUtils() { }
+
+    public static String getRedirectForOwner(Owner owner) {
+        System.out.println ("ViewUtils===============");
+        System.out.println("ViewUtil->"+owner.getId());
+        String redirect =  OWNER_SHOW_REDIRECT + owner.getId();
+        System.out.println("Redirect-?"+redirect);
+        return redirect;
+    }
+}
+====PageType=========
+public class PageType {
+    public static final String ADD  = "add";
+    public static final String EDIT = "edit";
+    public static final String SHOW = "show";
+    public static final String FIND = "find";
+    public static final String LIST = "list";
+    public static final String FORM = "form";
+}
+
+

@@ -1,0 +1,2 @@
+For those that are familiar with Spring's PetClinic application, this sample is functionally identical with one key configuration change: All the XML files are gone! (well, all the Spring XML files anyway - only web.xml remains)
+ This project is different from an original sample including: Hibernate Annotation, MySQL,
